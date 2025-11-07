@@ -56,7 +56,7 @@ class Wavefunction:
         return psi
 
     def add_to_plot(self, axis):
-        axis.plot(self.x, np.real(self.matrix), label=self.label)
+        axis.plot(self.x, np.abs(self.matrix)*np.abs(self.matrix), label=self.label)
 
     def show(self):
         fig, axis = plt.subplots()
@@ -172,6 +172,19 @@ class Potential(Operator):
         return Potential(v, label="Infinite well")
 
     @classmethod
+    def infinite_well_with_bump(cls, a, vo):
+        """ This sets to potential to a infinite well of width a """
+        v = np.zeros((len(Wavefunction.x),))
+
+        for i, x in enumerate(Wavefunction.x):
+            if abs(x) >= abs(a)/2:
+                v[i]   = INFINITY
+            elif x > 0:
+                v[i]   = vo
+
+        return Potential(v, label="Infinite well")
+
+    @classmethod
     def finite_well(cls, a, vo):
         """ This sets to potential to a finite well of width a and depth vo"""
         v = np.zeros((len(Wavefunction.x),))
@@ -203,6 +216,7 @@ class Potential(Operator):
                 v[i] = abs(vo)
 
         return Potential(v, label=r"Finite barrier of width {0:.1f} $\AA$, height $V_o = {1} eV$".format(a, vo))
+
 
     @classmethod
     def harmonic_well(cls, omega=0.5):
@@ -288,10 +302,10 @@ class Hamiltonian(Operator):
 
             if probability:
                 scaling = 0.5*delta/max(abs(eigenstates[i].matrix)**2)
-                ax.plot(self.x, np.abs(eigenstates[i].matrix)**2 * scaling + energies[i], label=r'$\psi_{0}$'.format(i))
+                ax.plot(self.x, np.abs(eigenstates[i].matrix)**2 * scaling + energies[i], label=r'$|\psi_{{{0}}}|^2$'.format(i))
             else:
                 scaling = 0.5*delta/max(abs(eigenstates[i].matrix.real))
-                ax.plot(self.x, eigenstates[i].matrix.real * scaling + energies[i], label=r'$\psi_{0}$'.format(i))
+                ax.plot(self.x, eigenstates[i].matrix.real * scaling + energies[i], label=r'$\psi_{{{0}}}$'.format(i))
         self.potential.add_to_plot(ax)
         ax.set_ylim(eMin-deltaE*0.5, eMax+deltaE*0.5)
   
@@ -375,12 +389,16 @@ def infrared_qw_well_laser_at_10_6():
         print("{0}\t{1}\t{2}".format(vo, a,E))
 
 if __name__ == "__main__":
-    Wavefunction.x = np.linspace(-60,60,501)
+    # infrared_qw_well_laser_at_10_6()
+    
+    Wavefunction.x = np.linspace(-60,60,1001)
+    h = Hamiltonian(Potential.infinite_well_with_bump(a=30, vo=0.1))
+    h.show_eigenstates(which=[0,1,2], probability=True)
     h = Hamiltonian(Potential.infinite_well(a=30))
-    h.show_eigenstates(which=[0,1,2])
-    h = Hamiltonian(Potential.finite_well(a=30, vo=2))
-    h.show_eigenstates(which=[0,1,2])
-    h = Hamiltonian(Potential.harmonic_well(omega=0.01))
-    h.show_eigenstates(which=[0,1,2,30,50])
-    h = Hamiltonian(Potential.harmonic_halfwell(omega=0.01))
-    h.show_eigenstates(which=[0,1,2,30,50])
+    h.show_eigenstates(which=[0,1,2], probability=True)
+    # h = Hamiltonian(Potential.finite_well(a=30, vo=2))
+    # h.show_eigenstates(which=[0,1,2], probability=True)
+    # h = Hamiltonian(Potential.harmonic_well(omega=0.01))
+    # h.show_eigenstates(which=[0,1,2,30,50], probability=True)
+    # h = Hamiltonian(Potential.harmonic_halfwell(omega=0.01))
+    # h.show_eigenstates(which=[0,1,2], probability=True)
