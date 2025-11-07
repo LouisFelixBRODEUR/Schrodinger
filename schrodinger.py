@@ -5,6 +5,7 @@ from scipy.constants import hbar, m_e, elementary_charge, Planck, c
 from scipy.sparse.linalg import eigs
 from findiff import FinDiff
 import matplotlib.pyplot as plt
+from threading import Lock
 
 """ 
 Reference
@@ -13,6 +14,7 @@ https://medium.com/@mathcube7/two-lines-of-python-to-solve-the-schrödinger-equa
 
 INFINITY = 100000
 Ksch = 0.5*hbar*hbar/m_e/elementary_charge/1e-20 # in eV*Angstrom^2
+lock = Lock()
 
 class Wavefunction:
     x = np.linspace(-10,10,1001)
@@ -308,9 +310,9 @@ def infrared_qwlaser(vo):
 
     for a in np.linspace(28, 35, 16):
         try:
-            lock.acquire()
-            h = Hamiltonian(Potential.finite_well(a=a, vo=vo))
-            lock.release()
+            with lock:
+                h = Hamiltonian(Potential.finite_well(a=a, vo=vo))
+
             # h = Hamiltonian(Potential.infinite_well(a=a))
             energies, eigenstates = h.eigenstates(k=2)
             print("{0:.2f}\t{1:.3}".format(a, (energies[1]-energies[0])))
@@ -321,9 +323,9 @@ def infrared_qwlaser(vo):
 
 
 def infrared_qwlaser_find(vo, target_diff_in_eV = 0.001, wavelength = 10.6e-6):
-    lock.acquire()
-    dx = Wavefunction.x[1]-Wavefunction.x[0]
-    lock.release()
+    with lock:
+        dx = Wavefunction.x[1]-Wavefunction.x[0]
+
     target_laser_energy = Planck * c /wavelength/elementary_charge
 
     try:
@@ -379,7 +381,7 @@ def infrared_qw_well_laser_at_10_6():
         print("{0}\t{1}\t{2}".format(vo, a,E))
 
 if __name__ == "__main__":
-    infrared_qw_well_laser_at_10_6()
-    # Wavefunction.x = np.linspace(-60,60,501)
-    # h = Hamiltonian(Potential.finite_well(a=30, vo=4))
-    # h.show_eigenstates(which=[0,1,2])
+    # infrared_qw_well_laser_at_10_6()
+    Wavefunction.x = np.linspace(-60,60,501)
+    h = Hamiltonian(Potential.finite_well(a=30, vo=4))
+    h.show_eigenstates(which=[0,1,2])
