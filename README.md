@@ -1,7 +1,11 @@
 # Schrodinger
+This Python code is in support of the GPH-3004 Quantum Mechanics class for Engineers.
+
+Daniel Côté dccote@cervo.ulaval.ca
+
 ## Getting started
 
- A set of classes to solve the Schrodinger equation for various potentials.
+ A set of classes to solve the Schrödinger equation for various potentials.
 
  Use `pip install -r requirements.txt` to install the required packages.
 
@@ -9,9 +13,7 @@
 
 ## What is this?
 
-This Python code is in support of the GPH-3004 Quantum Mechnics class for Engineers.
-
-Three scripts:
+Four scripts:
 
 1. `schrodinger.py`: classes to solve the schrodinger equation in various potentials. Several potentials are already programmed:
 
@@ -29,7 +31,7 @@ Three scripts:
 
    Simple cases are described to demonstrate this.
 
-   
+4. `testschrodinger.py` because we always test our code.
 
 
 
