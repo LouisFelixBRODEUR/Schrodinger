@@ -58,9 +58,9 @@ def model_epr():
 	"""
 	We can try any populations, the most correlation will always be 4/9
 	"""
-	# states_Ni = np.array([1,1,1,1,1,1,1,1]) # equal populations
+	states_Ni = np.array([1,1,1,1,1,1,1,1]) # equal populations
 	# states_Ni = np.array([0,1,0,0,0,0,0,0]) 
-	states_Ni = choose_random_populations()
+	# states_Ni = choose_random_populations()
 
 	states_prob = states_Ni / np.sum(states_Ni)
 	for _ in range(N):
@@ -77,7 +77,7 @@ def model_epr():
 
 	print(f"EPR Model")
 	print(f"=========")
-	print(f"After performing the experiment {N} times, we obtained:")
+	print(f"After performing the experiment {N} times, with the 8 states having probabilities {[f"{p:0.1f}%" for p in states_prob*100]} we obtained:")
 
 	if same_stat <= 4/9*100:
 		print(f"Same {same_stat:.2f}% ≤ 4/9 of the time, as expected if hidden variables model is correct")
@@ -204,5 +204,5 @@ def model_qm():
 
 if __name__ == "__main__":
 	model_epr()
-	# model_qm()
+	model_qm()
 
