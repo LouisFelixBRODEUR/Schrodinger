@@ -381,7 +381,7 @@ def infrared_qw_well_laser_at_10_6():
         print("{0}\t{1}\t{2}".format(vo, a,E))
 
 if __name__ == "__main__":
-    # infrared_qw_well_laser_at_10_6()
-    Wavefunction.x = np.linspace(-60,60,501)
-    h = Hamiltonian(Potential.finite_well(a=30, vo=3))
-    h.show_eigenstates(which=[0,1,2])
+    infrared_qw_well_laser_at_10_6()
+    # Wavefunction.x = np.linspace(-60,60,501)
+    # h = Hamiltonian(Potential.finite_well(a=30, vo=3))
+    # h.show_eigenstates(which=[0,1,2])
